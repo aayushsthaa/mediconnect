@@ -25,6 +25,7 @@ public class PasswordEncryptionUtil {
 	private static final int IV_LENGTH_BYTE = 12;
 	private static final int SALT_LENGTH_BYTE = 16;
 	private static final Charset UTF_8 = StandardCharsets.UTF_8;
+	private static final String STATIC_SECRET_KEY = "PasswordEncryptionKey221!";
 
 	public static byte[] getRandomNonce(int numBytes) {
 		byte[] nonce = new byte[numBytes];
@@ -57,7 +58,7 @@ public class PasswordEncryptionUtil {
 	}
 
 	// return a base64 encoded AES encrypted text
-	public static String encrypt(String employee_id, String password) {
+	public static String encrypt(String password) {
 		try {
 			// 16 bytes salt
 			byte[] salt = getRandomNonce(SALT_LENGTH_BYTE);
@@ -66,7 +67,7 @@ public class PasswordEncryptionUtil {
 			byte[] iv = getRandomNonce(IV_LENGTH_BYTE);
 
 			// secret key from password
-			SecretKey aesKeyFromPassword = getAESKeyFromPassword(employee_id.toCharArray(), salt);
+			SecretKey aesKeyFromPassword = getAESKeyFromPassword(STATIC_SECRET_KEY.toCharArray(), salt);
 
 			Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
 
@@ -87,7 +88,7 @@ public class PasswordEncryptionUtil {
 
 	}
 
-	public static String decrypt(String encryptedPassword, String username) {
+	public static String decrypt(String encryptedPassword) {
 		try {
 			byte[] decode = Base64.getDecoder().decode(encryptedPassword.getBytes(UTF_8));
 
@@ -104,7 +105,7 @@ public class PasswordEncryptionUtil {
 			bb.get(cipherText);
 
 			// get back the aes key from the same password and salt
-			SecretKey aesKeyFromPassword = PasswordEncryptionUtil.getAESKeyFromPassword(username.toCharArray(), salt);
+			SecretKey aesKeyFromPassword = PasswordEncryptionUtil.getAESKeyFromPassword(STATIC_SECRET_KEY.toCharArray(), salt);
 
 			Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
 
@@ -114,6 +115,8 @@ public class PasswordEncryptionUtil {
 
 			return new String(plainText, UTF_8);
 		} catch (Exception ex) {
+			System.err.println("Decryption failed: " + ex.getMessage());
+		    ex.printStackTrace();
 			return null;
 		}
 

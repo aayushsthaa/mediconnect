@@ -3,7 +3,7 @@ package com.mediconnect.model;
 import java.time.LocalDate;
 
 public class UserModel {
-	private String user_id;
+	private Integer user_id;
 	private String user_first_name;
 	private String user_last_name;
 	private String user_username;
@@ -33,8 +33,34 @@ public class UserModel {
 	}
 
 
+	public UserModel(Integer user_id, String user_first_name, String user_last_name, String user_username,
+			String user_email, String user_phonenumber, String user_gender, LocalDate user_dob, String user_location) {
+		this.user_id = user_id;
+		this.user_first_name = user_first_name;
+		this.user_last_name = user_last_name;
+		this.user_username = user_username;
+		this.user_email = user_email;
+		this.user_phonenumber = user_phonenumber;
+		this.user_gender = user_gender;
+		this.user_dob = user_dob;
+		this.user_location = user_location;
+	}
 
-	public UserModel(String user_id, String user_first_name, String user_last_name, String user_username, String user_email, String user_phonenumber, String user_gender, LocalDate user_dob, String user_location, String user_password, String user_role) {
+	public UserModel(Integer user_id, String user_first_name, String user_last_name, String user_username,
+			String user_email, String user_phonenumber, String user_gender, String user_location, String user_role, LocalDate user_dob) {
+		this.user_id = user_id;
+		this.user_first_name = user_first_name;
+		this.user_last_name = user_last_name;
+		this.user_username = user_username;
+		this.user_email = user_email;
+		this.user_phonenumber = user_phonenumber;
+		this.user_dob = user_dob;
+		this.user_location = user_location;
+		this.user_role = user_role;
+		this.user_gender = user_gender;
+	}
+
+	public UserModel(Integer user_id, String user_first_name, String user_last_name, String user_username, String user_email, String user_phonenumber, String user_gender, LocalDate user_dob, String user_location, String user_password, String user_role) {
 		this.user_id = user_id;
 		this.user_first_name = user_first_name;
 		this.user_last_name = user_last_name;
@@ -49,7 +75,7 @@ public class UserModel {
 	}
 	
 
-	public UserModel(String user_id, String user_first_name, String user_last_name, String user_username,
+	public UserModel(Integer user_id, String user_first_name, String user_last_name, String user_username,
 			String user_email, String user_phonenumber, String user_gender, LocalDate user_dob, String user_location,
 			String user_password) {
 		super();
@@ -78,11 +104,11 @@ public class UserModel {
 	}
 
 
-	public String getUser_id() {
+	public Integer getUser_id() {
 		return user_id;
 	}
 
-	public void setUser_id(String user_id) {
+	public void setUser_id(Integer user_id) {
 		this.user_id = user_id;
 	}
 

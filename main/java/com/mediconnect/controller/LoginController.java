@@ -10,6 +10,7 @@ import java.io.IOException;
 import com.mediconnect.model.UserModel;
 import com.mediconnect.service.LoginService;
 import com.mediconnect.util.CookiesUtil;
+import com.mediconnect.util.ExtractionUtil;
 import com.mediconnect.util.RedirectionUtil;
 import com.mediconnect.util.SessionUtil;
 
@@ -20,8 +21,9 @@ import com.mediconnect.util.SessionUtil;
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	LoginService loginService;
-	RedirectionUtil redirectionUtil;
+	private LoginService loginService;
+	private RedirectionUtil redirectionUtil;
+	private ExtractionUtil extractionUtil;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -30,6 +32,7 @@ public class LoginController extends HttpServlet {
         super();
         this.loginService = new LoginService();
         this.redirectionUtil = new RedirectionUtil();
+        this.extractionUtil = new ExtractionUtil();
     }
 
 	/**
@@ -46,26 +49,36 @@ public class LoginController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String username = request.getParameter("username");
-		String password = request.getParameter("password");
 		
-		UserModel userModel = new UserModel(username, password);
+		UserModel userModel = extractionUtil.extractUserModelLogin(request, response);
 		Boolean loginStatus = loginService.loginUser(userModel);
-		String userRole = loginService.getUserRole(username);
-
-		if(userRole == null) {
-			System.out.println("User Role is null");
-			return;
-		}
+		UserModel userModelDatabase = loginService.getUserObjectFromDatabase(username);
+		String userRole = userModelDatabase.getUser_role();
 		
 		if(loginStatus != null && loginStatus) {
-			SessionUtil.setAttribute(request, "username", username);
+			if(userModelDatabase == null || userRole == null) {
+				System.out.println("User Object is null");
+				return;
+			}
+			SessionUtil.setAttribute(request, "username", userModelDatabase.getUser_username());
 			SessionUtil.setAttribute(request, "role", userRole);
+			SessionUtil.setAttribute(request, "firstName", userModelDatabase.getUser_first_name());
+			SessionUtil.setAttribute(request, "lastName", userModelDatabase.getUser_last_name());
+			SessionUtil.setAttribute(request, "phoneNumber", userModelDatabase.getUser_phonenumber());
+			SessionUtil.setAttribute(request, "location", userModelDatabase.getUser_location());
+			SessionUtil.setAttribute(request, "DOB", userModelDatabase.getUser_dob());
+			SessionUtil.setAttribute(request, "gender", userModelDatabase.getUser_gender());
+			SessionUtil.setAttribute(request, "email", userModelDatabase.getUser_email());
+			SessionUtil.setAttribute(request, "doctorList", loginService.getDoctorList());
 			if(userRole.equals("Admin")) {
-				CookiesUtil.addCookie(response, "role", "admin", 5 * 30);
+				CookiesUtil.addCookie(response, "role", "Admin", 5 * 30);
 				redirectionUtil.redirectToPage(request, response, "AdminDashboard");
 			}else if(userRole.equals("Customer")) {
-				CookiesUtil.addCookie(response, "role", "customer", 5 * 30);
-				redirectionUtil.redirectToPage(request, response, "index");
+				CookiesUtil.addCookie(response, "role", "Customer", 5 * 30);
+				redirectionUtil.redirectToPage(request, response, "CustomerDashboard");
+			}else if(userRole.equals("Staff")) {
+				CookiesUtil.addCookie(response, "role", "Staff", 5 * 30);
+				redirectionUtil.redirectToPage(request, response, "StaffDashboard");
 			}
 		}else {
 			handleLoginFailure(request, response, loginStatus);

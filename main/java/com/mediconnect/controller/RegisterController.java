@@ -7,11 +7,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 
 import com.mediconnect.model.UserModel;
 import com.mediconnect.service.RegisterService;
-import com.mediconnect.util.PasswordEncryptionUtil;
+import com.mediconnect.util.ExtractionUtil;
 import com.mediconnect.util.RedirectionUtil;
 
 /**
@@ -26,10 +25,12 @@ public class RegisterController extends HttpServlet {
 	
 	private RegisterService registerService;
 	private RedirectionUtil redirectionUtil;
+	private ExtractionUtil extractionUtil;
 	
 	public void init() throws ServletException {
 		this.registerService = new RegisterService();
 		this.redirectionUtil = new RedirectionUtil();
+		this.extractionUtil = new ExtractionUtil();
 	}
        
     /**
@@ -53,71 +54,15 @@ public class RegisterController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		UserModel userModel = extractUserModel(request, response);
+		UserModel userModel = extractionUtil.extractUserModelRegister(request, response);
 		Boolean isAdded = registerService.addUser(userModel);
 		
 		if(isAdded == null) {
 			System.out.println("Error adding");
 		}else if(isAdded) {
-			System.out.println("Hello");
 			redirectionUtil.redirectToPage(request, response, "login");
 			return;
 		}
     }
-	
-	
-	private UserModel extractUserModel(HttpServletRequest request, HttpServletResponse response) {
-		String name = request.getParameter("firstname");
-		String lastName = request.getParameter("lastname");
-		String username = request.getParameter("username");
-		String location = request.getParameter("location");
-		String email = request.getParameter("email");
-		LocalDate birthday = LocalDate.parse(request.getParameter("dateOfBirth"));
-		String phoneNum = request.getParameter("phoneNumber");
-		String gender = request.getParameter("gender");
-		
-		String pass = request.getParameter("password");
-		String repass = request.getParameter("retypePassword");
-		
-		if(!isValidPassword(pass, repass) || !isPasswordSame(pass, repass)) {
-			System.out.println("error password");
-		}
-
-		pass = PasswordEncryptionUtil.encrypt(username, pass);
-		
-		return new UserModel("NULL", name, lastName, username, email, phoneNum, gender, birthday, location, pass, "Customer");
-	}
-	
-	
-
-//    // Helper methods for validations
-//    private boolean isValidName(String name) {
-//        // Implement name validation logic
-//        return !name.matches(".*\\d.*") && !name.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
-//    }
-//    
-//    private boolean isValidUsername(String username) {
-//        // Implement username validation logic
-//        return username.length() > 6 && !username.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
-//    }
-//
-//    private boolean isValidPhoneNumber(String phoneNumber) {
-//        // Implement phone number validation logic
-//        return phoneNumber.startsWith("+") && phoneNumber.length() == 14;
-//    }
-//
-    private boolean isValidPassword(String password, String retypePassword) {
-        // Implement password validation logic
-        return password.length() > 6 && password.matches(".*\\d.*") && password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")
-                && password.matches(".*[A-Z].*");
-    }
-	
-    private boolean isPasswordSame(String password, String retypePassword){
-    	return password.equals(retypePassword);
-    }
-    
-//    private boolean isValidEmail(String email) {
-//    	return email.matches(".*@.*[.].*") || email.matches(".*[.].*@.*");
-//    }
 
 }
