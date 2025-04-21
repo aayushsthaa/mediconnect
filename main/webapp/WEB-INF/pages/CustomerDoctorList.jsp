@@ -12,7 +12,7 @@
 <jsp:include page="header.jsp"/>
 
 <section class="main-content">
-      <jsp:include page="CustomerLeftsideNavigation.jsp"/>
+      <jsp:include page="leftNavigation.jsp"/>
 
       <div class="list-content">
         <div class="doctor-container">

@@ -6,6 +6,7 @@
 
 <c:set var="userSession" value="${pageContext.session}" />
 <c:set var="currentUser" value="${userSession.getAttribute('username')}" />
+<c:set var="currentRole" value="${userSession.getAttribute('role')}" />
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="actionUrl" />
 <c:set var="formMethod" />
@@ -46,9 +47,22 @@
             <ul>
               <li><a href="index">Home</a></li>
               <li><a href="#">Blog</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="AdminDashboard" class="${dashboardHide }">${currentUser }</a></li>
+              <li><a href="AboutUs">About Us</a></li>
+              <li><a href="ContactUs">Contact Us</a></li>
+              
+              <c:choose>
+              <c:when test="${currentRole == 'Admin'}">
+				<li><a href="AdminDashboard" class="${dashboardHide }">${currentUser }</a></li>
+              </c:when>
+              
+              <c:when test="${currentRole == 'Staff'}">
+              	<li><a href="StaffDashboard" class="${dashboardHide }">${currentUser }</a></li>
+              </c:when>
+              
+              <c:otherwise>
+              	<li><a href="CustomerDashboard" class="${dashboardHide }">${currentUser }</a></li>
+              </c:otherwise>
+              </c:choose>
             </ul>
           </nav>
           <form action="${actionUrl }" method="${formMethod }">
