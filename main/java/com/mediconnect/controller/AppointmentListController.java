@@ -7,34 +7,41 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.mediconnect.service.DashboardService;
+import com.mediconnect.util.SessionUtil;
+
 /**
  * Servlet implementation class AdminAppointmentListController
+ * Handles the display of appointment list for admin users.
  */
 @WebServlet(asyncSupported = true, urlPatterns = { "/AppointmentList" })
 public class AppointmentListController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	
+	DashboardService dashboardService;
+
     /**
-     * @see HttpServlet#HttpServlet()
+     * Default constructor initializing DashboardService.
      */
     public AppointmentListController() {
         super();
-        // TODO Auto-generated constructor stub
+        dashboardService = new DashboardService();
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * Handles GET request.
+	 * Retrieves appointment list and forwards to AppointmentList.jsp.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		SessionUtil.setAttribute(request, "appointmentList", dashboardService.getAppointmentListModel());
 		request.getRequestDispatcher("/WEB-INF/pages/AppointmentList.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Handles POST request.
+	 * Forwards the request to doGet method.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
