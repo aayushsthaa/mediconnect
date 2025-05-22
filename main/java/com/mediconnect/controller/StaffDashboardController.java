@@ -7,34 +7,41 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.mediconnect.service.DashboardService;
+import com.mediconnect.util.SessionUtil;
+
 /**
  * Servlet implementation class StaffDashboardController
+ * Handles requests to display the staff dashboard page.
  */
 @WebServlet(asyncSupported = true, urlPatterns = { "/StaffDashboard" })
 public class StaffDashboardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private DashboardService dashboardService;
+
     /**
-     * @see HttpServlet#HttpServlet()
+     * Default constructor initializing the DashboardService.
      */
     public StaffDashboardController() {
         super();
-        // TODO Auto-generated constructor stub
+        dashboardService = new DashboardService();
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * Handles GET requests to load dashboard data and forward to StaffDashboard JSP.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		// Retrieve admin dashboard info and set it in session for display
+		SessionUtil.setAttribute(request, "dashboardNumbers", dashboardService.getAdminDashboardInfo());
+
+		// Forward request to StaffDashboard JSP page
 		request.getRequestDispatcher("/WEB-INF/pages/StaffDashboard.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Handles POST requests by delegating to doGet to display dashboard.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

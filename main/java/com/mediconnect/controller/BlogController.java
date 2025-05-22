@@ -8,34 +8,32 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Servlet implementation class ContactUsController
- * Handles requests to the Contact Us page.
+ * Servlet implementation class BlogController
  */
-@WebServlet(asyncSupported = true, urlPatterns = { "/ContactUs" })
-public class ContactUsController extends HttpServlet {
+@WebServlet(asyncSupported = true, urlPatterns = { "/Blog" })
+public class BlogController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
-     * Default constructor.
+     * @see HttpServlet#HttpServlet()
      */
-    public ContactUsController() {
+    public BlogController() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
-	 * Handles GET request.
-	 * Forwards request to ContactUs JSP page.
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Forward to ContactUs page
-		request.getRequestDispatcher("/WEB-INF/pages/ContactUs.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/pages/Blog.jsp").forward(request, response);
 	}
 
 	/**
-	 * Handles POST request.
-	 * Forwards POST requests to doGet to display ContactUs page.
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
