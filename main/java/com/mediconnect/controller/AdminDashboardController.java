@@ -7,34 +7,40 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.mediconnect.service.DashboardService;
+import com.mediconnect.util.SessionUtil;
+
 /**
  * Servlet implementation class AdminDashboardController
+ * Handles displaying the admin dashboard with summary information.
  */
 @WebServlet(asyncSupported = true, urlPatterns = { "/AdminDashboard" })
 public class AdminDashboardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private DashboardService dashboardService;
+
     /**
-     * @see HttpServlet#HttpServlet()
+     * Constructor initializes DashboardService instance.
      */
     public AdminDashboardController() {
         super();
-        // TODO Auto-generated constructor stub
+        dashboardService = new DashboardService();
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * Handles GET request.
+	 * Retrieves dashboard summary data and sets it in session.
+	 * Forwards to AdminDashboard.jsp to display the dashboard.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		SessionUtil.setAttribute(request, "dashboardNumbers", dashboardService.getAdminDashboardInfo());
 		request.getRequestDispatcher("/WEB-INF/pages/AdminDashboard.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Handles POST request by delegating to doGet method.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 }
